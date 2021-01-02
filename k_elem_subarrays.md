@@ -16,7 +16,7 @@ We then have
 c = 5
 ```
 
-The fact that there `8` distinct elements in `[2:12]` means that only two 
+The fact that there `8` are distinct elements in `[2:12]` means that only two 
 elements in `[2:12]` repeat. Even if all of those repeating elements are 
 within `[2:9]` that still leaves us with the minimum of `(9 - 2) - 2 = 5` 
 elements. So there is no way that there are `3` elements in `[2:9]`.
@@ -28,3 +28,13 @@ More broadly, `K + c` distinct elements in `[a:a+n]`
 `k - (n - (K + c))`. So for there to be `K` elements in 
 `[a:a+k]` we must have `k - n + K + c <= K` or, 
 equivalently, `k + c <= n`
+
+So, to have a chance of encountering a subarray of length `k` with `K` 
+distinct elements, we must advance `a` by `n - (k + c)`
+
+
+If there are `K - c` elements in `[a:a+n]` then there can't possibly be 
+`K` elements in `[a:a+k]`, in fact there can't possibly be `K` elements in 
+`[a+s:a+s+k]` for any `s` such that `a + s + k <= a + n`. For there to be `K` 
+elements in `[a+s:a+s+k]` we need to have `a + n + c < a + s + k` or, equivalently,
+`n + c - k < s`
