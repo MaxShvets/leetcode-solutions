@@ -38,3 +38,33 @@ If there are `K - c` elements in `[a:a+n]` then there can't possibly be
 `[a+s:a+s+k]` for any `s` such that `a + s + k <= a + n`. For there to be `K` 
 elements in `[a+s:a+s+k]` we need to have `a + n + c < a + s + k` or, equivalently,
 `n + c - k < s`
+
+### Some examples:
+####Caterpillar examples
+Examples contain slices of `K` elements  
+
+- `s` - start of the slice
+- `ś` - the last index such that `[ś:e]` contains `K` elements
+- `e` - end of the slice
+- `é` - the first such index that `[s:é]` contains `K` elements 
+```
+K = 4
+1 2 3 4 3 2 1 5
+^     ^ ^     ^
+s     é ś     e
+
+K = 4
+1 2 3 4 1 2 3 4 5
+^     ^   ^     ^
+s     é   ś     e
+
+K = 4
+1 2 3 4 1 2 3 4 1 2 3 4 5
+^     ^           ^     ^
+s     é           ś     e
+
+K = 4
+1 2 3 4 5
+^ ^   ^ ^
+s ś   é e
+```
