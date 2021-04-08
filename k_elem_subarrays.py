@@ -22,15 +22,11 @@ class Caterpillar:
 
     def grow(self) -> Tuple[int, Counter]:
         while (
-            len(self._counter) < self._max_distinct_elements
-            and self._end < len(self._list)
-        ):
-            self._counter[self._list[self._end]] += 1
-            self._end += 1
-
-        while (
             self._end < len(self._list)
-            and self._list[self._end] in self._counter
+            and (
+                len(self._counter) < self._max_distinct_elements
+                or self._list[self._end] in self._counter
+            )
         ):
             self._counter[self._list[self._end]] += 1
             self._end += 1
@@ -64,7 +60,6 @@ class Caterpillar:
         return num_good_subarrays
 
 
-
 class Solution:
     def subarraysWithKDistinct(self, A: List[int], K: int) -> int:
         num_good_subarrays = 0
@@ -94,6 +89,6 @@ if __name__ == "__main__":
     with open("k-elem-subarrays-test-case.json") as test_case_file:
         test_case = json.load(test_case_file)
 
-    start_time = time.monotonic()
+    start_time = time.perf_counter()
     print(solution.subarraysWithKDistinct(test_case["array"], test_case["K"]))
-    print(f"Took {time.monotonic() - start_time}")
+    print(f"Took {time.perf_counter() - start_time}")
