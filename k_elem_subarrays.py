@@ -9,7 +9,7 @@ class Solution:
         counter = Counter(A[0:K])
         r = K - 1
 
-        while r + 1 < len(A) and (len(counter) < K):
+        while r + 1 < len(A) and len(counter) < K:
             r += 1
             counter[A[r]] += 1
 
@@ -22,7 +22,9 @@ class Solution:
         l2 = 0
         short_counter = counter.copy()
         while len(short_counter) == K:
-            short_counter -= Counter({A[l2]: 1})
+            short_counter[A[l2]] -= 1
+            if short_counter[A[l2]] == 0:
+                del short_counter[A[l2]]
             l2 += 1
 
         result += l2 - l1
@@ -38,13 +40,17 @@ class Solution:
                 l1 = l2
                 counter = short_counter.copy()
                 while len(short_counter) == K:
-                    short_counter -= Counter({A[l2]: 1})
+                    short_counter[A[l2]] -= 1
+                    if short_counter[A[l2]] == 0:
+                        del short_counter[A[l2]]
                     l2 += 1
             elif A[r] in counter:
                 counter[A[r]] += 1
                 short_counter[A[r]] += 1
                 while len(short_counter) == K:
-                    short_counter -= Counter({A[l2]: 1})
+                    short_counter[A[l2]] -= 1
+                    if short_counter[A[l2]] == 0:
+                        del short_counter[A[l2]]
                     l2 += 1
 
             result += l2 - l1
