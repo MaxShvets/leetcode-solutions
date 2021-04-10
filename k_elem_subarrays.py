@@ -1,7 +1,7 @@
 import json
 import time
 from collections import Counter
-from typing import List, Tuple
+from typing import List
 
 
 class Solution:
@@ -21,39 +21,26 @@ class Solution:
         l1 = 0
         l2 = 0
         short_counter = counter.copy()
-        while len(short_counter) == K:
-            short_counter[A[l2]] -= 1
-            if short_counter[A[l2]] == 0:
-                del short_counter[A[l2]]
-            l2 += 1
 
-        result += l2 - l1
-
-        while r + 1 < len(A):
-            r += 1
-
-            if A[r] in short_counter:
-                counter[A[r]] += 1
-                short_counter[A[r]] += 1
-            elif A[r] not in counter:
-                short_counter[A[r]] += 1
-                l1 = l2
-                counter = short_counter.copy()
-                while len(short_counter) == K:
-                    short_counter[A[l2]] -= 1
-                    if short_counter[A[l2]] == 0:
-                        del short_counter[A[l2]]
-                    l2 += 1
-            elif A[r] in counter:
-                counter[A[r]] += 1
-                short_counter[A[r]] += 1
-                while len(short_counter) == K:
-                    short_counter[A[l2]] -= 1
-                    if short_counter[A[l2]] == 0:
-                        del short_counter[A[l2]]
-                    l2 += 1
+        while True:
+            while len(short_counter) == K:
+                short_counter[A[l2]] -= 1
+                if short_counter[A[l2]] == 0:
+                    del short_counter[A[l2]]
+                l2 += 1
 
             result += l2 - l1
+
+            r += 1
+            if r == len(A):
+                break
+
+            if A[r] not in counter:
+                l1 = l2
+                counter = short_counter.copy()
+
+            counter[A[r]] += 1
+            short_counter[A[r]] += 1
 
         return result
 
