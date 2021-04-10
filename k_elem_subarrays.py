@@ -4,81 +4,59 @@ from collections import Counter
 from typing import List, Tuple
 
 
-class Caterpillar:
-    def __init__(self, list_: List[int], max_distinct_elements: int):
-        self._list = list_
-        self._max_distinct_elements = max_distinct_elements
-        self._start = 0
-        self._end = max_distinct_elements - 1
-        self._counter = Counter(list_[self._start:self._end])
-
-    @property
-    def end(self) -> int:
-        return self._end
-
-    @property
-    def num_distinct(self) -> int:
-        return len(self._counter)
-
-    def grow(self) -> Tuple[int, Counter]:
-        while (
-            self._end < len(self._list)
-            and (
-                len(self._counter) < self._max_distinct_elements
-                or self._list[self._end] in self._counter
-            )
-        ):
-            self._counter[self._list[self._end]] += 1
-            self._end += 1
-
-        return self._end, self._counter
-
-    def shrink(self) -> Tuple[int, Counter]:
-        while self._max_distinct_elements <= len(self._counter):
-            self._counter -= Counter([self._list[self._start]])
-            self._start += 1
-
-        return self._start, self._counter
-
-    def count_good_subarrays(self) -> int:
-        num_good_subarrays = 0
-        counter = self._counter.copy()
-
-        for i in range(self._start, self._end):
-            sub_counter = counter.copy()
-            j = self._end - 1
-
-            while i <= j and len(sub_counter) == self._max_distinct_elements:
-                num_good_subarrays += 1
-                sub_counter -= Counter([self._list[j]])
-                j -= 1
-
-            counter -= Counter([self._list[i]])
-            if len(counter) < self._max_distinct_elements:
-                break
-
-        return num_good_subarrays
-
-
 class Solution:
     def subarraysWithKDistinct(self, A: List[int], K: int) -> int:
-        num_good_subarrays = 0
-        caterpillar = Caterpillar(A, K)
+        counter = Counter(A[0:K])
+        r = K - 1
 
-        while caterpillar.end < len(A):
-            caterpillar.grow()
+        while r + 1 < len(A) and (len(counter) < K):
+            r += 1
+            counter[A[r]] += 1
 
-            if caterpillar.num_distinct < K:
-                break
+        if r == len(A):
+            return 0
 
-            num_good_subarrays += caterpillar.count_good_subarrays()
-            caterpillar.shrink()
+        result = 0
 
-        return num_good_subarrays
+        l1 = 0
+        l2 = 0
+        short_counter = counter.copy()
+        while len(short_counter) == K:
+            short_counter -= Counter({A[l2]: 1})
+            l2 += 1
+
+        result += l2 - l1
+
+        while r + 1 < len(A):
+            r += 1
+
+            if A[r] in short_counter:
+                counter[A[r]] += 1
+                short_counter[A[r]] += 1
+            elif A[r] not in counter:
+                short_counter[A[r]] += 1
+                l1 = l2
+                counter = short_counter.copy()
+                while len(short_counter) == K:
+                    short_counter -= Counter({A[l2]: 1})
+                    l2 += 1
+            elif A[r] in counter:
+                counter[A[r]] += 1
+                short_counter[A[r]] += 1
+                while len(short_counter) == K:
+                    short_counter -= Counter({A[l2]: 1})
+                    l2 += 1
+
+            result += l2 - l1
+
+        return result
 
 
 if __name__ == "__main__":
     solution = Solution()
+
+    test_result = solution.subarraysWithKDistinct([2, 1, 2, 1, 1], 3)
+    assert test_result == 0
 
     test_result = solution.subarraysWithKDistinct([1,2,1,2,3], 2)
     assert test_result == 7, test_result
